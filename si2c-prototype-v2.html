@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Si2C Intelligent Control Plane - Prototype v2 (Sentinel)</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Sentinel V2 Stylesheet -->
+  <link rel="stylesheet" href="sentinel-v2.css">
+</head>
+<body>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <div class="logo">
+          <div class="logo-icon">S2</div>
+          <span>Si2C Control Plane</span>
+        </div>
+      </div>
+      <nav class="nav">
+        <button class="nav-item active" data-page="dashboard">Monitor</button>
+        <button class="nav-item" data-page="topology">Map</button>
+        <button class="nav-item" data-page="review">History</button>
+        <button class="nav-item" data-page="configure">Configure</button>
+      </nav>
+      <div class="header-right">
+        <div class="user-avatar">MC</div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Dashboard Page -->
+      <div id="page-dashboard" class="page active">
+        <div class="dashboard-grid">
+          <!-- Domain Health Cards -->
+          <div class="domain-cards-section">
+            <div class="section-header">
+              <span class="section-title">Infrastructure</span>
+            </div>
+            <div class="domain-cards-grid" id="infrastructure-cards">
+              <!-- Cards injected by JS -->
+            </div>
+            <div class="section-header mt-md">
+              <span class="section-title">Operations & Security</span>
+            </div>
+            <div class="domain-cards-grid" id="ops-security-cards">
+              <!-- Cards injected by JS -->
+            </div>
+          </div>
+
+          <!-- Middle Section: Anomalies + Recommendations -->
+          <div class="middle-section">
+            <!-- Active Anomalies Panel -->
+            <div class="panel">
+              <div class="panel-header">
+                <div class="panel-title">
+                  Active Anomalies
+                  <span class="panel-badge" id="anomaly-count">5</span>
+                </div>
+                <button class="btn btn-ghost btn-sm">View All</button>
+              </div>
+              <div class="panel-content" id="anomalies-list">
+                <!-- Anomaly cards injected by JS -->
+              </div>
+            </div>
+
+            <!-- AI Recommendations Panel -->
+            <div class="panel">
+              <div class="panel-header">
+                <div class="panel-title">
+                  <span style="color: var(--color-ai);">AI</span> Recommendations
+                  <span class="panel-badge" style="background-color: var(--color-ai);">1</span>
+                </div>
+              </div>
+              <div class="panel-content" id="recommendations-list">
+                <!-- Recommendation cards injected by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Autonomous Actions Feed -->
+          <div class="actions-feed-section">
+            <div class="panel-header">
+              <div class="panel-title">Recent Autonomous Actions</div>
+              <span class="text-muted" style="font-size: 0.75rem;">47 actions today</span>
+            </div>
+            <div class="actions-feed-content" id="actions-feed">
+              <!-- Action entries injected by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topology Page -->
+      <div id="page-topology" class="page">
+        <div class="page-header">
+          <h1>Facility Map</h1>
+          <p>DC-Alpha - Hall A</p>
+        </div>
+        <div class="topology-container">
+          <div class="map-container">
+            <div class="map-header">
+              <div class="section-title">Rack Layout</div>
+              <div style="display: flex; gap: var(--spacing-sm);">
+                <button class="btn btn-secondary btn-sm">Cooling Layer</button>
+                <button class="btn btn-ghost btn-sm">Power Layer</button>
+              </div>
+            </div>
+            <div class="map-content" id="rack-grid">
+              <!-- Rack cells injected by JS -->
+            </div>
+          </div>
+          <div class="impact-panel">
+            <div class="section-title mb-md">Impact Chain</div>
+            <div class="impact-chain-visual">
+              <div class="chain-node warning">
+                <div class="chain-node-icon">🌡️</div>
+                <div class="chain-node-label">CDU-12</div>
+                <div class="chain-node-value">83% flow</div>
+              </div>
+              <div class="chain-arrow">→</div>
+              <div class="chain-node warning">
+                <div class="chain-node-icon">🖥️</div>
+                <div class="chain-node-label">Racks 44-48</div>
+                <div class="chain-node-value">5 racks</div>
+              </div>
+              <div class="chain-arrow">→</div>
+              <div class="chain-node warning">
+                <div class="chain-node-icon">⚡</div>
+                <div class="chain-node-label">127 GPUs</div>
+                <div class="chain-node-value">thermal risk</div>
+              </div>
+              <div class="chain-arrow">→</div>
+              <div class="chain-node critical">
+                <div class="chain-node-icon">📊</div>
+                <div class="chain-node-label">TJ-2847</div>
+                <div class="chain-node-value">at risk</div>
+              </div>
+            </div>
+            <div class="detail-section mt-lg">
+              <div class="detail-section-title">Selected: CDU-12</div>
+              <div class="detail-card">
+                <div class="metric-row">
+                  <span class="metric-label">Status</span>
+                  <span class="metric-value warning">Degrading</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Flow Rate</span>
+                  <span class="metric-value warning">83%</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Supply Temp</span>
+                  <span class="metric-value">18.2°C</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Return Temp</span>
+                  <span class="metric-value">32.4°C</span>
+                </div>
+                <div class="metric-row">
+                  <span class="metric-label">Racks Served</span>
+                  <span class="metric-value">44-48</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review Page -->
+      <div id="page-review" class="page">
+        <div class="page-header">
+          <h1>History</h1>
+          <p>Review operational history, incidents, and autonomous actions</p>
+        </div>
+        <div class="section-title mb-md">Recent Resolved Incidents</div>
+        <div class="incident-list">
+          <div class="incident-card">
+            <div class="incident-info">
+              <h3>INC-2024-0847: CDU-12 Flow Degradation Cascade</h3>
+              <div class="incident-meta">Duration: 12 min | Outcome: No data loss | 2 hours ago</div>
+            </div>
+            <div class="incident-actions">
+              <button class="btn btn-secondary btn-sm">View Timeline</button>
+              <button class="btn btn-ghost btn-sm">Export Report</button>
+            </div>
+          </div>
+          <div class="incident-card">
+            <div class="incident-info">
+              <h3>INC-2024-0842: Network Congestion Event</h3>
+              <div class="incident-meta">Duration: 8 min | Outcome: Auto-resolved | Yesterday</div>
+            </div>
+            <div class="incident-actions">
+              <button class="btn btn-secondary btn-sm">View Timeline</button>
+              <button class="btn btn-ghost btn-sm">Export Report</button>
+            </div>
+          </div>
+          <div class="incident-card">
+            <div class="incident-info">
+              <h3>INC-2024-0839: Power Distribution Imbalance</h3>
+              <div class="incident-meta">Duration: 5 min | Outcome: Auto-resolved | 2 days ago</div>
+            </div>
+            <div class="incident-actions">
+              <button class="btn btn-secondary btn-sm">View Timeline</button>
+              <button class="btn btn-ghost btn-sm">Export Report</button>
+            </div>
+          </div>
+        </div>
+        <div class="section-title mt-lg mb-md">Audit Summary</div>
+        <div class="detail-card" style="max-width: 400px;">
+          <div class="metric-row">
+            <span class="metric-label">Actions (24h)</span>
+            <span class="metric-value">47</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Actions (7d)</span>
+            <span class="metric-value">312</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Override Rate</span>
+            <span class="metric-value text-success">2.1%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Configure Page -->
+      <div id="page-configure" class="page">
+        <div class="page-header">
+          <h1>Configure</h1>
+          <p>Configure control plane behavior, policies, and operational parameters</p>
+        </div>
+        <div class="config-cards-grid">
+          <div class="config-card">
+            <div class="config-card-icon">🤖</div>
+            <h3>Autonomy Policies</h3>
+            <p>12 active policies</p>
+            <button class="btn btn-secondary btn-sm">Manage Policies</button>
+          </div>
+          <div class="config-card">
+            <div class="config-card-icon">📊</div>
+            <h3>Business Priorities</h3>
+            <p>8 rules | 47 ranked workloads</p>
+            <button class="btn btn-secondary btn-sm">Manage Priorities</button>
+          </div>
+          <div class="config-card">
+            <div class="config-card-icon">📋</div>
+            <h3>Remediation Playbooks</h3>
+            <p>34 active playbooks</p>
+            <button class="btn btn-secondary btn-sm">Manage Playbooks</button>
+          </div>
+          <div class="config-card">
+            <div class="config-card-icon">🔔</div>
+            <h3>Alert Configuration</h3>
+            <p>156 alert rules</p>
+            <button class="btn btn-secondary btn-sm">Manage Alerts</button>
+          </div>
+          <div class="config-card">
+            <div class="config-card-icon">🗺️</div>
+            <h3>Topology Config</h3>
+            <p>4,872 components</p>
+            <button class="btn btn-secondary btn-sm">Manage Topology</button>
+          </div>
+          <div class="config-card">
+            <div class="config-card-icon">👥</div>
+            <h3>On-Call & Escalation</h3>
+            <p>6 teams | 4 on-call</p>
+            <button class="btn btn-secondary btn-sm">Manage On-Call</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Status Bar -->
+    <footer class="status-bar">
+      <div class="status-bar-left">
+        <span>Last updated: <span id="last-updated">14:23:45</span></span>
+        <span>47 autonomous actions today</span>
+      </div>
+      <div class="status-bar-right">
+        <div class="status-indicator">
+          <div class="status-dot"></div>
+          <span>System: Healthy</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Slide Panel Overlay -->
+  <div class="slide-panel-overlay" id="panel-overlay"></div>
+
+  <!-- Alert Detail Slide Panel -->
+  <div class="slide-panel" id="alert-panel">
+    <div class="slide-panel-header">
+      <button class="close-btn" id="close-panel">←</button>
+      <div class="slide-panel-title">
+        <h2 id="panel-alert-id">ALT-2024-03847</h2>
+        <p id="panel-alert-title">CDU-12 flow rate degradation</p>
+      </div>
+      <span class="severity-badge critical">CRITICAL</span>
+      <span class="countdown">⏱️ <span id="panel-countdown">3:47</span></span>
+    </div>
+    <div class="slide-panel-content">
+      <!-- Source Telemetry -->
+      <div class="detail-section">
+        <div class="detail-section-title">Source Telemetry</div>
+        <div class="detail-card">
+          <div class="metric-row">
+            <span class="metric-label">Metric</span>
+            <span class="metric-value">Flow Rate</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Current Value</span>
+            <span class="metric-value warning">83%</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Threshold</span>
+            <span class="metric-value">85%</span>
+          </div>
+          <div class="metric-row">
+            <span class="metric-label">Trend</span>
+            <span class="metric-value critical">↓ 1.2%/min for 8 min</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Root Cause Analysis -->
+      <div class="detail-section">
+        <div class="detail-section-title">AI Root Cause Analysis</div>
+        <div class="ai-analysis-card">
+          <div class="ai-analysis-header">
+            <span class="ai-badge">🤖 AI Analysis</span>
+            <span class="confidence-label">87% confidence</span>
+          </div>
+          <div class="hypothesis-text">CDU-12 pump degradation</div>
+          <div class="confidence-bar">
+            <div class="confidence-track">
+              <div class="confidence-fill" style="width: 87%;"></div>
+            </div>
+          </div>
+          <ul class="evidence-list">
+            <li class="evidence-item">
+              <span class="evidence-icon">✓</span>
+              Flow rate declining at 1.2%/min
+            </li>
+            <li class="evidence-item">
+              <span class="evidence-icon">✓</span>
+              Pump power draw increased 8%
+            </li>
+            <li class="evidence-item">
+              <span class="evidence-icon">✓</span>
+              No external factors detected
+            </li>
+          </ul>
+          <div class="mt-sm" style="font-size: 0.75rem; color: var(--color-text-muted);">
+            Similar incidents: ALT-2024-02991, ALT-2024-01847
+          </div>
+        </div>
+      </div>
+
+      <!-- Impact Chain -->
+      <div class="detail-section">
+        <div class="detail-section-title">Impact Chain</div>
+        <div class="impact-chain-visual">
+          <div class="chain-node warning">
+            <div class="chain-node-icon">🌡️</div>
+            <div class="chain-node-label">CDU-12</div>
+            <div class="chain-node-value">83%</div>
+          </div>
+          <div class="chain-arrow">→</div>
+          <div class="chain-node warning">
+            <div class="chain-node-icon">🖥️</div>
+            <div class="chain-node-label">5 Racks</div>
+            <div class="chain-node-value">44-48</div>
+          </div>
+          <div class="chain-arrow">→</div>
+          <div class="chain-node warning">
+            <div class="chain-node-icon">⚡</div>
+            <div class="chain-node-label">127 GPUs</div>
+            <div class="chain-node-value">risk</div>
+          </div>
+          <div class="chain-arrow">→</div>
+          <div class="chain-node critical">
+            <div class="chain-node-icon">📊</div>
+            <div class="chain-node-label">TJ-2847</div>
+            <div class="chain-node-value">67%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Recommendation -->
+      <div class="detail-section">
+        <div class="detail-section-title">AI Recommendation</div>
+        <div class="recommendation-detail">
+          <div class="ai-analysis-header">
+            <span class="ai-badge">🤖 Recommended Response</span>
+            <span class="confidence-label">91% confidence</span>
+          </div>
+          <div class="action-list mt-md">
+            <div class="action-item">
+              <span class="action-number">1</span>
+              <div>
+                <div>Trigger emergency checkpoint on TJ-2847</div>
+                <div class="text-muted" style="font-size: 0.75rem;">~90 seconds • Preserves 7 min compute (~$1,800)</div>
+              </div>
+            </div>
+            <div class="action-item">
+              <span class="action-number">2</span>
+              <div>
+                <div>Begin workload migration to Racks 52-56</div>
+                <div class="text-muted" style="font-size: 0.75rem;">~8 minutes • 127 GPUs • Reversible</div>
+              </div>
+            </div>
+            <div class="action-item">
+              <span class="action-number">3</span>
+              <div>
+                <div>Dispatch maintenance ticket for CDU-12</div>
+                <div class="text-muted" style="font-size: 0.75rem;">Immediate • Facilities Team • High Priority</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="outcome-projections">
+            <div class="outcome-card positive">
+              <div class="outcome-label">If Approved</div>
+              <div class="outcome-text">Checkpoint completes, 0 compute lost</div>
+              <div class="outcome-probability">95% probability</div>
+            </div>
+            <div class="outcome-card negative">
+              <div class="outcome-label">If Rejected</div>
+              <div class="outcome-text">Potential 7+ min compute loss</div>
+              <div class="outcome-probability">73% probability of thermal shutdown</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-panel-footer">
+      <button class="btn btn-ghost">Reject</button>
+      <button class="btn btn-secondary">Modify</button>
+      <button class="btn btn-primary" id="approve-btn">Approve All</button>
+    </div>
+  </div>
+
+  <!-- Approval Modal -->
+  <div class="modal-overlay" id="approval-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Confirm Approval</h2>
+      </div>
+      <div class="modal-body">
+        <p style="margin-bottom: var(--spacing-md);">You are approving 3 actions:</p>
+        <div class="action-list">
+          <div class="action-item">
+            <span class="action-number">1</span>
+            <span>Trigger emergency checkpoint on TJ-2847</span>
+          </div>
+          <div class="action-item">
+            <span class="action-number">2</span>
+            <span>Begin workload migration to Racks 52-56</span>
+          </div>
+          <div class="action-item">
+            <span class="action-number">3</span>
+            <span>Dispatch maintenance ticket for CDU-12</span>
+          </div>
+        </div>
+        <div class="ai-indicator mt-md">
+          🤖 AI will execute these actions autonomously upon approval
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" id="cancel-approval">Cancel</button>
+        <button class="btn btn-primary" id="confirm-approval">Approve & Execute</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ========================================
+    // MOCK DATA
+    // ========================================
+    const domainData = [
+      // Infrastructure
+      { domain: 'Cooling', icon: '🌡️', category: 'Infrastructure', status: 'Degraded', score: 87, alerts: 1, criticalAlerts: 1, trend: 'Declining', metric: '78% capacity' },
+      { domain: 'Compute', icon: '🖥️', category: 'Infrastructure', status: 'Degraded', score: 92, alerts: 0, criticalAlerts: 0, trend: 'Stable', metric: '3,847/3,872 GPUs' },
+      { domain: 'Network', icon: '🌐', category: 'Infrastructure', status: 'Healthy', score: 99, alerts: 0, criticalAlerts: 0, trend: 'Stable', metric: '1.2 µs latency' },
+      { domain: 'Storage', icon: '💾', category: 'Infrastructure', status: 'Healthy', score: 98, alerts: 0, criticalAlerts: 0, trend: 'Stable', metric: '2.4M IOPS' },
+      // Operations & Security
+      { domain: 'Power', icon: '⚡', category: 'Operations', status: 'Healthy', score: 96, alerts: 0, criticalAlerts: 0, trend: 'Stable', metric: '42.3 MW load' },
+      { domain: 'RAN', icon: '📡', category: 'Operations', status: 'Healthy', score: 94, alerts: 1, criticalAlerts: 0, trend: 'Stable', metric: '847/850 cells' },
+      { domain: 'Net Security', icon: '🛡️', category: 'Security', status: 'Degraded', score: 88, alerts: 2, criticalAlerts: 0, trend: 'Declining', metric: '1,247 blocked' },
+      { domain: 'Physical Sec', icon: '🚪', category: 'Security', status: 'Healthy', score: 99, alerts: 0, criticalAlerts: 0, trend: 'Stable', metric: '156/156 cameras' }
+    ];
+
+    const anomaliesData = [
+      {
+        id: 'ALT-2024-03847',
+        severity: 'Critical',
+        title: 'CDU-12 flow rate degradation',
+        domain: 'Cooling',
+        object: 'CDU-12',
+        countdown: '3:47',
+        hasCountdown: true,
+        metrics: 'Flow Rate: 83% (threshold: 85%)',
+        trend: '↓ 1.2%/min for 8 min',
+        impact: '5 racks • 127 GPUs • 1 training job',
+        hasAI: true
+      },
+      {
+        id: 'ALT-2024-03851',
+        severity: 'Medium',
+        title: 'Unusual outbound traffic pattern',
+        domain: 'Network Security',
+        object: 'FW-Core-02',
+        hasCountdown: false,
+        metrics: 'Anomaly Score: 78% (threshold: 60%)',
+        trend: '↑ 5%/min',
+        impact: 'Core firewall • potential exfiltration',
+        hasAI: true
+      },
+      {
+        id: 'ALT-2024-03852',
+        severity: 'Medium',
+        title: 'IDS signature match: port scan',
+        domain: 'Network Security',
+        object: 'IDS-Zone-B',
+        hasCountdown: false,
+        metrics: 'Signature: Recon/PortScan-TCP',
+        impact: 'Network Zone B • reconnaissance',
+        hasAI: false
+      },
+      {
+        id: 'ALT-2024-03842',
+        severity: 'Medium',
+        title: 'Rack-21 inlet temp elevated',
+        domain: 'Cooling',
+        object: 'Rack-21',
+        hasCountdown: false,
+        metrics: 'Inlet: 27°C (threshold: 25°C)',
+        impact: '1 rack • 32 GPUs',
+        hasAI: false,
+        assigned: 'Sarah Chen'
+      },
+      {
+        id: 'ALT-2024-03849',
+        severity: 'Low',
+        title: 'RU-247 signal degradation',
+        domain: 'RAN',
+        object: 'RU-247',
+        hasCountdown: false,
+        metrics: 'Signal: -82 dBm (threshold: -75)',
+        impact: '1 radio unit • ~200 UEs',
+        hasAI: false,
+        assigned: 'Mike Rodriguez'
+      }
+    ];
+
+    const actionsData = [
+      { id: 'ACT-2024-08472', type: 'workload', icon: '📤', title: 'Inference workload shed from INF-03', time: '2 min ago', outcome: 'Success', policy: 'Capacity Constraint Response v2.1', isNew: true },
+      { id: 'ACT-2024-08471', type: 'cooling', icon: '🌡️', title: 'Cooling output increased CL-7', time: '15 min ago', outcome: 'Success', policy: 'Thermal Response v1.2', isNew: false },
+      { id: 'ACT-2024-08470', type: 'traffic', icon: '🔀', title: 'Traffic rerouted from Zone B', time: '1 hour ago', outcome: 'Success', policy: 'Network Optimization v3.0', isNew: false },
+      { id: 'ACT-2024-08469', type: 'checkpoint', icon: '💾', title: 'Checkpoint triggered TJ-2841', time: '2 hours ago', outcome: 'Success', policy: 'Data Protection v1.1', isNew: false }
+    ];
+
+    // ========================================
+    // RENDER FUNCTIONS
+    // ========================================
+    function renderDomainCards() {
+      const infraContainer = document.getElementById('infrastructure-cards');
+      const opsContainer = document.getElementById('ops-security-cards');
+
+      const infraDomains = domainData.filter(d => d.category === 'Infrastructure');
+      const opsDomains = domainData.filter(d => d.category !== 'Infrastructure');
+
+      infraContainer.innerHTML = infraDomains.map(renderDomainCard).join('');
+      opsContainer.innerHTML = opsDomains.map(renderDomainCard).join('');
+    }
+
+    function renderDomainCard(domain) {
+      const statusClass = domain.status.toLowerCase();
+      const alertClass = domain.criticalAlerts > 0 ? 'has-critical' : (domain.alerts > 0 ? 'has-alerts' : '');
+      const trendClass = domain.trend === 'Improving' ? 'improving' : (domain.trend === 'Declining' ? 'declining' : '');
+      const trendIcon = domain.trend === 'Improving' ? '↑' : (domain.trend === 'Declining' ? '↓' : '→');
+
+      return `
+        <div class="domain-card" onclick="showDomainDetail('${domain.domain}')">
+          <div class="domain-card-header">
+            <div class="domain-card-title">
+              <span class="domain-icon">${domain.icon}</span>
+              <span>${domain.domain}</span>
+            </div>
+            <span class="status-badge ${statusClass}">${domain.status}</span>
+          </div>
+          <div class="health-score">${domain.score}%</div>
+          <div class="health-bar">
+            <div class="health-bar-fill ${statusClass}" style="width: ${domain.score}%;"></div>
+          </div>
+          <div class="domain-card-footer">
+            <span class="alert-count ${alertClass}">
+              ${domain.alerts > 0 ? `⚠️ ${domain.alerts} alert${domain.alerts > 1 ? 's' : ''}` : '✓ No alerts'}
+            </span>
+            <span class="trend ${trendClass}">${trendIcon} ${domain.trend}</span>
+          </div>
+          <div class="key-metric">${domain.metric}</div>
+        </div>
+      `;
+    }
+
+    function renderAnomalies() {
+      const container = document.getElementById('anomalies-list');
+      container.innerHTML = anomaliesData.map(renderAnomalyCard).join('');
+      document.getElementById('anomaly-count').textContent = anomaliesData.length;
+    }
+
+    function renderAnomalyCard(anomaly) {
+      const severityClass = anomaly.severity.toLowerCase();
+      return `
+        <div class="anomaly-card ${severityClass}" onclick="openAlertPanel('${anomaly.id}')">
+          <div class="anomaly-header">
+            <span class="severity-badge ${severityClass}">${anomaly.severity}</span>
+            ${anomaly.hasCountdown ? `<span class="countdown">⏱️ ${anomaly.countdown}</span>` : ''}
+          </div>
+          <div class="anomaly-title">${anomaly.title}</div>
+          <div class="anomaly-subtitle">${anomaly.domain} → ${anomaly.object}</div>
+          <div class="anomaly-metrics">${anomaly.metrics}</div>
+          ${anomaly.trend ? `<div class="anomaly-metrics text-warning">${anomaly.trend}</div>` : ''}
+          <div class="anomaly-impact">Impact: ${anomaly.impact}</div>
+          ${anomaly.hasAI ? '<div class="ai-indicator">🤖 AI Recommendation Available</div>' : ''}
+          ${anomaly.assigned ? `<div class="text-muted" style="font-size: 0.75rem; margin-top: 8px;">Assigned: ${anomaly.assigned}</div>` : ''}
+        </div>
+      `;
+    }
+
+    function renderRecommendations() {
+      const container = document.getElementById('recommendations-list');
+      container.innerHTML = `
+        <div class="recommendation-card">
+          <div class="recommendation-header">
+            <span class="urgency-badge">IMMEDIATE</span>
+            <span class="countdown">⏱️ 2:58</span>
+          </div>
+          <div class="recommendation-title">Respond to CDU-12 flow degradation</div>
+          <div class="recommendation-meta">Affects: TJ-2847, Racks 44-48</div>
+          <div class="confidence-bar">
+            <div class="confidence-track">
+              <div class="confidence-fill" style="width: 91%;"></div>
+            </div>
+            <span class="confidence-label">91%</span>
+          </div>
+          <div class="action-list">
+            <div class="action-item">
+              <span class="action-number">1</span>
+              <span>Trigger emergency checkpoint</span>
+            </div>
+            <div class="action-item">
+              <span class="action-number">2</span>
+              <span>Begin workload migration</span>
+            </div>
+            <div class="action-item">
+              <span class="action-number">3</span>
+              <span>Dispatch maintenance ticket</span>
+            </div>
+          </div>
+          <div class="recommendation-buttons">
+            <button class="btn btn-primary" onclick="openAlertPanel('ALT-2024-03847')">Review & Approve</button>
+            <button class="btn btn-ghost">Dismiss</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderActionsFeed() {
+      const container = document.getElementById('actions-feed');
+      container.innerHTML = actionsData.map(renderActionEntry).join('');
+    }
+
+    function renderActionEntry(action) {
+      return `
+        <div class="action-feed-entry ${action.isNew ? 'new' : ''}" onclick="showActionDetail('${action.id}')">
+          <div class="action-icon">${action.icon}</div>
+          <div class="action-content">
+            <div class="action-title">${action.title}</div>
+            <div class="action-meta">${action.policy}</div>
+          </div>
+          <span class="action-outcome success">${action.outcome}</span>
+          <span class="action-time">${action.time}</span>
+        </div>
+      `;
+    }
+
+    function renderRackGrid() {
+      const container = document.getElementById('rack-grid');
+      let html = '';
+      for (let i = 1; i <= 60; i++) {
+        let status = 'healthy';
+        if (i >= 44 && i <= 48) status = 'warning';
+        if (i === 21) status = 'warning';
+        html += `<div class="rack-cell ${status}">R${i}</div>`;
+      }
+      container.innerHTML = html;
+    }
+
+    // ========================================
+    // NAVIGATION
+    // ========================================
+    function initNavigation() {
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => {
+        item.addEventListener('click', () => {
+          // Update nav active state
+          navItems.forEach(n => n.classList.remove('active'));
+          item.classList.add('active');
+
+          // Show corresponding page
+          const pageId = item.dataset.page;
+          document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+          document.getElementById(`page-${pageId}`).classList.add('active');
+        });
+      });
+    }
+
+    // ========================================
+    // PANEL INTERACTIONS
+    // ========================================
+    function openAlertPanel(alertId) {
+      document.getElementById('panel-overlay').classList.add('open');
+      document.getElementById('alert-panel').classList.add('open');
+    }
+
+    function closeAlertPanel() {
+      document.getElementById('panel-overlay').classList.remove('open');
+      document.getElementById('alert-panel').classList.remove('open');
+    }
+
+    function openApprovalModal() {
+      document.getElementById('approval-modal').classList.add('open');
+    }
+
+    function closeApprovalModal() {
+      document.getElementById('approval-modal').classList.remove('open');
+    }
+
+    function showDomainDetail(domain) {
+      console.log('Show domain detail:', domain);
+      // In a full implementation, this would open a domain detail view
+    }
+
+    function showActionDetail(actionId) {
+      console.log('Show action detail:', actionId);
+      // In a full implementation, this would open an action detail panel
+    }
+
+    // ========================================
+    // EVENT LISTENERS
+    // ========================================
+    document.getElementById('panel-overlay').addEventListener('click', closeAlertPanel);
+    document.getElementById('close-panel').addEventListener('click', closeAlertPanel);
+    document.getElementById('approve-btn').addEventListener('click', openApprovalModal);
+    document.getElementById('cancel-approval').addEventListener('click', closeApprovalModal);
+    document.getElementById('confirm-approval').addEventListener('click', () => {
+      closeApprovalModal();
+      closeAlertPanel();
+      alert('Actions approved and executing...');
+    });
+
+    // Close modal on overlay click
+    document.getElementById('approval-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'approval-modal') {
+        closeApprovalModal();
+      }
+    });
+
+    // Update timestamp
+    function updateTimestamp() {
+      const now = new Date();
+      document.getElementById('last-updated').textContent =
+        now.toLocaleTimeString('en-US', { hour12: false });
+    }
+
+    // Countdown timer simulation
+    let countdownSeconds = 227; // 3:47
+    function updateCountdown() {
+      countdownSeconds--;
+      if (countdownSeconds < 0) countdownSeconds = 300;
+      const mins = Math.floor(countdownSeconds / 60);
+      const secs = countdownSeconds % 60;
+      const timeStr = `${mins}:${secs.toString().padStart(2, '0')}`;
+      document.getElementById('panel-countdown').textContent = timeStr;
+
+      // Update anomaly card countdown
+      const anomalyCountdowns = document.querySelectorAll('.anomaly-card.critical .countdown');
+      anomalyCountdowns.forEach(el => {
+        el.innerHTML = `⏱️ ${timeStr}`;
+      });
+    }
+
+    // ========================================
+    // INITIALIZATION
+    // ========================================
+    function init() {
+      renderDomainCards();
+      renderAnomalies();
+      renderRecommendations();
+      renderActionsFeed();
+      renderRackGrid();
+      initNavigation();
+
+      // Start timers
+      setInterval(updateTimestamp, 1000);
+      setInterval(updateCountdown, 1000);
+      updateTimestamp();
+    }
+
+    // Run on DOM ready
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
