@@ -1,0 +1,43 @@
+/* PANEL: layout grid | tokens: tokens.css + sentinel-v2.css */
+/* Detail Pane is now an overlay, not part of grid */
+
+.app-shell {
+  display: grid;
+  grid-template-rows: var(--gr-step-3) 1fr;
+  grid-template-columns: var(--gr-step-7) 1fr;
+  grid-template-areas:
+    "topbar topbar"
+    "nav-rail canvas";
+  height: 100vh;
+  overflow: hidden;
+  transition: grid-template-columns var(--transition-normal);
+}
+
+/* Nav Rail collapsed state - hide the nav rail column */
+.app-shell.nav-rail-collapsed {
+  grid-template-columns: 0 1fr;
+}
+
+/* Panel slot rules */
+#panel-topbar {
+  grid-area: topbar;
+  overflow: hidden;
+  position: relative;
+}
+
+#panel-nav-rail {
+  grid-area: nav-rail;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+#panel-canvas {
+  grid-area: canvas;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Detail Pane is positioned fixed as overlay - no grid assignment needed */
+/* See detail-pane.css for positioning */

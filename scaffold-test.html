@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Si2C Scaffold Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="sentinel-v2.css">
+  <link rel="stylesheet" href="styles/tokens.css">
+  <link rel="stylesheet" href="styles/layout.css">
+  <link rel="stylesheet" href="styles/topbar.css">
+  <link rel="stylesheet" href="styles/nav-rail.css">
+  <link rel="stylesheet" href="styles/canvas.css">
+  <link rel="stylesheet" href="styles/detail-pane.css">
+  <style>
+    /* Visual debugging styles */
+    .debug-label {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-ui);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--color-brand-primary);
+      text-align: center;
+      pointer-events: none;
+    }
+    .debug-info {
+      display: block;
+      font-size: 12px;
+      font-family: var(--font-data);
+      color: var(--color-text-muted);
+      margin-top: 8px;
+    }
+    #panel-topbar .debug-label { top: 50%; }
+    #panel-nav-rail .debug-label,
+    #panel-canvas .debug-label,
+    #panel-detail-pane .debug-label { top: 40%; }
+  </style>
+</head>
+<body>
+  <div class="app-shell" id="app-shell">
+    <div id="panel-topbar">
+      <!-- LEFT: Chat Button -->
+      <div class="topbar-left">
+        <button class="btn btn-primary btn-ask-ai" onclick="window.Si2C.showAskAI()">
+          💬 Chat
+        </button>
+      </div>
+
+      <!-- Facility Selector Section -->
+      <div class="facility-selector-section">
+        <span class="facility-label">Pod:</span>
+        <span id="selected-pod" class="facility-value">Hospitality & Leisure</span>
+
+        <span class="facility-label">Facility:</span>
+        <span id="selected-facility" class="facility-value">CA-Dalmatian1</span>
+
+        <button class="btn btn-secondary btn-sm" onclick="openFacilitySelector()">
+          Change Facility
+        </button>
+      </div>
+
+      <!-- CENTER: Tab Navigation -->
+      <div class="topbar-center">
+        <nav class="topbar-nav nav">
+          <button class="nav-item active" data-tab="dashboard" onclick="setActiveTab('dashboard')">
+            Dashboard
+          </button>
+          <button class="nav-item" data-tab="incidents" onclick="setActiveTab('incidents')">
+            Incidents
+          </button>
+          <button class="nav-item" data-tab="topology" onclick="setActiveTab('topology')">
+            Topology
+          </button>
+          <button class="nav-item" data-tab="applications" onclick="setActiveTab('applications')">
+            Applications
+          </button>
+          <button class="nav-item" data-tab="automation" onclick="setActiveTab('automation')">
+            Automation & Actions
+          </button>
+          <button class="nav-item" data-tab="policies" onclick="setActiveTab('policies')">
+            Policies & Configurations
+          </button>
+          <button class="nav-item" data-tab="activity" onclick="setActiveTab('activity')">
+            Activity & Audit
+          </button>
+        </nav>
+      </div>
+
+      <!-- RIGHT: Settings + User Profile -->
+      <div class="topbar-right">
+        <button class="settings-button" onclick="openSettings()">
+          <span class="settings-icon">⚙️</span>
+          <span class="settings-text">Settings</span>
+        </button>
+        <div class="user-info">
+          <span class="user-name">Operator</span>
+          <div class="user-avatar" title="User Profile">
+            👤
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-nav-rail">
+      <div class="debug-label">
+        NAV RAIL
+        <span class="debug-info">Width: 17.94vw (φ step 7) | nav-rail.css</span>
+        <span class="debug-info">3 zones: Accelerator | Stream | Prompt</span>
+      </div>
+    </div>
+
+    <div id="panel-canvas">
+      <!-- Info Icon - Toggle Detail Pane -->
+      <button class="canvas-info-icon" onclick="toggleDetailPane()" title="Toggle Info Panel">
+        ℹ️
+      </button>
+
+      <!-- CANVAS VIEW: Dashboard -->
+      <div id="canvas-dashboard" class="canvas-view active" data-canvas="dashboard">
+        <div class="canvas-top-panel">
+          <div class="canvas-panel-title">Dashboard</div>
+        </div>
+        <div class="canvas-content">
+          <div class="dashboard-grid">
+            <!-- SECTION: Domain Health Cards -->
+            <div id="canvas-dashboard-domain-health" class="domain-cards-section" data-section="domain-health">
+              <div class="section-header">
+                <span class="section-title">Infrastructure</span>
+              </div>
+              <div class="domain-cards-grid" id="infrastructure-cards">
+                <!-- Cards injected by JS -->
+              </div>
+              <div class="section-header mt-md">
+                <span class="section-title">Operations & Security</span>
+              </div>
+              <div class="domain-cards-grid" id="ops-security-cards">
+                <!-- Cards injected by JS -->
+              </div>
+            </div>
+
+            <!-- SECTION: Active Anomalies + AI Recommendations -->
+            <div class="middle-section">
+              <!-- SECTION: Active Anomalies Panel -->
+              <div id="canvas-dashboard-active-anomalies" class="panel" data-section="active-anomalies">
+                <div class="panel-header">
+                  <div class="panel-title">
+                    Active Anomalies
+                    <span class="panel-badge" id="anomaly-count">5</span>
+                  </div>
+                  <button class="btn btn-ghost btn-sm">View All</button>
+                </div>
+                <div class="panel-content" id="anomalies-list">
+                  <!-- Anomaly cards injected by JS -->
+                </div>
+              </div>
+
+              <!-- SECTION: AI Recommendations Panel -->
+              <div id="canvas-dashboard-ai-recommendations" class="panel" data-section="ai-recommendations">
+                <div class="panel-header">
+                  <div class="panel-title">
+                    <span style="color: var(--color-ai);">AI</span> Recommendations
+                    <span class="panel-badge" style="background-color: var(--color-ai);">1</span>
+                  </div>
+                </div>
+                <div class="panel-content" id="recommendations-list">
+                  <!-- Recommendation cards injected by JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION: Autonomous Actions Feed -->
+            <div id="canvas-dashboard-actions-feed" class="actions-feed-section" data-section="actions-feed">
+              <div class="panel-header">
+                <div class="panel-title">Recent Autonomous Actions</div>
+                <span class="text-muted" style="font-size: 0.75rem;">47 actions today</span>
+              </div>
+              <div class="actions-feed-content" id="actions-feed">
+                <!-- Action entries injected by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CANVAS VIEW: Incidents -->
+      <div id="canvas-incidents" class="canvas-view" data-canvas="incidents">
+        <div class="canvas-top-panel">
+          <div class="coming-soon-badge">
+            <span class="construction-icon">🚧</span>
+            <span class="coming-soon-label">Coming Soon</span>
+          </div>
+          <div class="canvas-panel-title">Panel for Incidents</div>
+        </div>
+        <div class="canvas-content"></div>
+      </div>
+
+      <!-- CANVAS VIEW: Topology -->
+      <div id="canvas-topology" class="canvas-view" data-canvas="topology">
+        <div class="canvas-top-panel">
+          <div class="coming-soon-badge">
+            <span class="construction-icon">🚧</span>
+            <span class="coming-soon-label">Coming Soon</span>
+          </div>
+          <div class="canvas-panel-title">Panel for Topology</div>
+        </div>
+        <div class="canvas-content"></div>
+      </div>
+
+      <!-- CANVAS VIEW: Applications -->
+      <div id="canvas-applications" class="canvas-view" data-canvas="applications">
+        <div class="canvas-top-panel">
+          <div class="coming-soon-badge">
+            <span class="construction-icon">🚧</span>
+            <span class="coming-soon-label">Coming Soon</span>
+          </div>
+          <div class="canvas-panel-title">Panel for Applications</div>
+        </div>
+        <div class="canvas-content"></div>
+      </div>
+
+      <!-- CANVAS VIEW: Automation & Actions -->
+      <div id="canvas-automation" class="canvas-view" data-canvas="automation">
+        <div class="canvas-top-panel">
+          <div class="coming-soon-badge">
+            <span class="construction-icon">🚧</span>
+            <span class="coming-soon-label">Coming Soon</span>
+          </div>
+          <div class="canvas-panel-title">Panel for Automation & Actions</div>
+        </div>
+        <div class="canvas-content"></div>
+      </div>
+
+      <!-- CANVAS VIEW: Activity -->
+      <div id="canvas-activity" class="canvas-view" data-canvas="activity">
+        <div class="canvas-top-panel">
+          <div class="canvas-panel-title">Panel for Activity</div>
+          <div class="coming-soon-badge">
+            <span class="construction-icon">🚧</span>
+            <span class="coming-soon-label">Coming Soon</span>
+          </div>
+        </div>
+        <div class="canvas-content"></div>
+      </div>
+
+      <!-- CANVAS VIEW: Policies & Configurations -->
+      <div id="canvas-policies" class="canvas-view" data-canvas="policies">
+        <div class="canvas-top-panel">
+          <div class="coming-soon-badge">
+            <span class="construction-icon">🚧</span>
+            <span class="coming-soon-label">Coming Soon</span>
+          </div>
+          <div class="canvas-panel-title">Policies & Configurations</div>
+        </div>
+        <div class="canvas-content"></div>
+      </div>
+
+      <!-- CANVAS VIEW: Activity & Audit -->
+      <div id="canvas-activity" class="canvas-view" data-canvas="activity">
+        <div class="canvas-top-panel">
+          <div class="coming-soon-badge">
+            <span class="construction-icon">🚧</span>
+            <span class="coming-soon-label">Coming Soon</span>
+          </div>
+          <div class="canvas-panel-title">Activity & Audit</div>
+        </div>
+        <div class="canvas-content"></div>
+      </div>
+
+    </div>
+
+    <div id="panel-detail-pane">
+      <!-- Header -->
+      <div class="detail-pane-header">
+        <div class="detail-pane-title">Information Panel</div>
+        <button class="detail-pane-close" onclick="closeDetailPane()" title="Close">
+          ✕
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="detail-pane-body">
+        <div class="debug-label" style="position: static; transform: none;">
+          DETAIL PANE
+          <span class="debug-info">Width: 29.03vw (φ step 8) | detail-pane.css</span>
+          <span class="debug-info">Overlay slide-in from right</span>
+          <span class="debug-info">Hidden by default</span>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="detail-pane-footer">
+        <button class="btn btn-secondary" onclick="closeDetailPane()">Close</button>
+        <button class="btn btn-primary">Take Action</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Facility Selector Modal -->
+  <div id="facility-selector-backdrop" class="facility-backdrop" onclick="closeFacilitySelector()">
+    <div id="dialog-facility-selector" class="facility-dialog" onclick="event.stopPropagation()">
+
+      <!-- Header -->
+      <div class="dialog-header">
+        <h2 class="dialog-title">Select Pod & Facility</h2>
+        <button class="dialog-close" onclick="closeFacilitySelector()">✕</button>
+      </div>
+
+      <!-- Content -->
+      <div class="dialog-content">
+
+        <!-- Pod Dropdown -->
+        <div class="form-group">
+          <label for="pod-select">Pod</label>
+          <select id="pod-select" class="form-select" onchange="filterFacilitiesByPod()">
+            <option value="Hetrogenous LOB">Hetrogenous LOB</option>
+            <option value="Semiconductor (DS)">Semiconductor (DS)</option>
+          </select>
+        </div>
+
+        <!-- Facility Dropdown -->
+        <div class="form-group">
+          <label for="facility-select">Facility</label>
+          <select id="facility-select" class="form-select">
+            <!-- Options populated dynamically based on pod selection -->
+          </select>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="dialog-footer">
+        <button class="btn btn-ghost" onclick="closeFacilitySelector()">Cancel</button>
+        <button class="btn btn-primary" onclick="updateFacilitySelection()">Update Panel</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" class="loading-overlay">
+    <div class="loading-content">
+      <div class="spinner"></div>
+      <div class="loading-message">Updating dashboard...</div>
+    </div>
+  </div>
+
+  <script src="scripts/interactions.js" defer></script>
+  <script>
+    // Log grid info on load
+    window.addEventListener('DOMContentLoaded', () => {
+      console.log('Si2C Scaffold Test - Grid Layout');
+      console.log('================================');
+      const shell = document.getElementById('app-shell');
+      const computed = window.getComputedStyle(shell);
+      console.log('Grid Template Rows:', computed.gridTemplateRows);
+      console.log('Grid Template Columns:', computed.gridTemplateColumns);
+      console.log('Grid Template Areas:', computed.gridTemplateAreas);
+      console.log('\nPanel Dimensions:');
+      ['topbar', 'nav-rail', 'canvas', 'detail-pane'].forEach(id => {
+        const el = document.getElementById('panel-' + id);
+        const rect = el.getBoundingClientRect();
+        console.log(`  ${id}: ${Math.round(rect.width)}px × ${Math.round(rect.height)}px`);
+      });
+      console.log('\nNav Rail State:', window.Si2C.navRailCollapsed ? 'COLLAPSED (hidden)' : 'EXPANDED (visible)');
+      console.log('\nRun logPanelStatus() to see panel registry');
+      console.log('Click "Ask AI" button to toggle Nav Rail');
+    });
+  </script>
+</body>
+</html>

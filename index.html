@@ -137,6 +137,10 @@
       border-left-color: var(--color-status-success);
     }
 
+    .version-card.v3 {
+      border-left-color: var(--color-status-info);
+    }
+
     .version-badge {
       display: inline-block;
       padding: 4px 12px;
@@ -153,6 +157,10 @@
 
     .version-card.v2 .version-badge {
       background: var(--color-status-success);
+    }
+
+    .version-card.v3 .version-badge {
+      background: var(--color-status-info);
     }
 
     .new-badge {
@@ -218,6 +226,10 @@
 
     .version-card.v2 .cta-button {
       background: var(--color-status-success);
+    }
+
+    .version-card.v3 .cta-button {
+      background: var(--color-status-info);
     }
 
     .cta-button:hover {
@@ -374,12 +386,30 @@
       <h2 class="section-title">Available Prototypes</h2>
 
       <div class="version-cards">
-        <!-- Version 2 -->
-        <a href="si2c-prototype-v2.html" class="version-card v2">
+        <!-- Version 3 -->
+        <a href="index-scaffold.html" class="version-card v3">
           <div>
-            <span class="version-badge">Version 2</span>
+            <span class="version-badge">Version 3</span>
             <span class="version-badge new-badge">New</span>
           </div>
+          <h2>Multi-Tenant Control Pane</h2>
+          <p>Full application scaffold with multi-tenant architecture supporting multiple Pod and Facility combinations with dynamic content loading.</p>
+          <ul class="version-features">
+            <li>Multi-tenant control pane architecture (14 Pod+Facility combinations)</li>
+            <li>Dynamic facility selector with intelligent filtering</li>
+            <li>7 canvas views (Dashboard, Incidents, Topology, Applications, Automation, Policies, Activity)</li>
+            <li>Settings relocated to topbar with gear icon</li>
+            <li>Live dashboard for Hetrogenous LOB / Lab-Demo</li>
+            <li>Left-aligned Coming Soon badges with orange theme</li>
+          </ul>
+          <div class="cta-button">
+            View Prototype v3 →
+          </div>
+        </a>
+
+        <!-- Version 2 -->
+        <a href="si2c-prototype-v2.html" class="version-card v2">
+          <span class="version-badge">Version 2</span>
           <h2>Sentinel Design System</h2>
           <p>Enhanced visual design with the Sentinel design system featuring refined typography, improved contrast, and operational aesthetics.</p>
           <ul class="version-features">
@@ -417,8 +447,36 @@
     <section class="history-section">
       <h2>Version History</h2>
       <div class="timeline">
-        <!-- Version 2.0 -->
+        <!-- Version 3.0 -->
         <div class="timeline-item latest">
+          <div class="timeline-marker"></div>
+          <div class="timeline-header">
+            <span class="version-number">v3.0</span>
+            <span class="version-date">April 16, 2026</span>
+          </div>
+          <div class="timeline-content">
+            <strong>Multi-Tenant Control Pane Architecture</strong>
+            <ul>
+              <li>Built full application scaffold with Command Bar, Nav Rail, Canvas, and Detail Pane</li>
+              <li>Implemented multi-tenant architecture supporting 14 Pod+Facility combinations</li>
+              <li>Created facility selector with Pod dropdown (Hetrogenous LOB, Semiconductor DS)</li>
+              <li>Added intelligent facility filtering (2 facilities for Hetrogenous, 12 for Semiconductor)</li>
+              <li>Implemented dynamic content loading for control panes</li>
+              <li>Added 7 canvas views: Dashboard, Incidents, Topology, Applications, Automation & Actions, Policies & Configurations, Activity & Audit</li>
+              <li>Relocated Settings from tabs to topbar-right with gear icon</li>
+              <li>Changed "Ask AI" button to "Chat" for clarity</li>
+              <li>Implemented live dashboard for Hetrogenous LOB / Lab-Demo combination</li>
+              <li>Added "Coming Soon" placeholders for other Pod+Facility combinations</li>
+              <li>Updated Coming Soon badges to left-aligned with orange theme for visibility</li>
+              <li>Added localStorage persistence for Pod and Facility selections</li>
+              <li>Implemented 5-second loading overlay during facility switching</li>
+              <li>Auto-reset to Dashboard tab when changing facilities</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Version 2.0 -->
+        <div class="timeline-item">
           <div class="timeline-marker"></div>
           <div class="timeline-header">
             <span class="version-number">v2.0</span>

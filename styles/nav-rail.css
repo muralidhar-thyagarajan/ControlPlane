@@ -1,0 +1,22 @@
+/* PANEL: Nav Rail | extends: sentinel-v2.css + tokens.css */
+
+/* Width: var(--gr-step-7) | BG: var(--color-bg-secondary) */
+/* Three stacked zones (flex-column): */
+/* 1. Accelerator Strip (height: var(--nav-accel-height)) */
+/* 2. Conversation Stream (flex: 1) */
+/* 3. Prompt Dock (height: var(--nav-prompt-height)) */
+
+#panel-nav-rail {
+  background-color: var(--color-bg-secondary);
+  border-right: 1px solid var(--color-border-active);
+  transition: opacity var(--transition-normal), transform var(--transition-normal);
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Collapsed state - slide out to the left */
+.app-shell.nav-rail-collapsed #panel-nav-rail {
+  opacity: 0;
+  transform: translateX(-100%);
+  pointer-events: none; /* Prevent interaction when hidden */
+}

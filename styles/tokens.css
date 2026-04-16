@@ -1,0 +1,17 @@
+/* PANEL: layout tokens | extends: sentinel-v2.css | do not add color or type tokens */
+:root {
+  /* Golden ratio proportions — φ-based layout grid */
+  --gr-step-3: 4.27vh;    /* Command Bar height, Accelerator Strip height */
+  --gr-step-5: 6.85vh;    /* Prompt Dock height */
+  --gr-step-7: 17.94vw;   /* Nav Rail width */
+  --gr-step-8: 29.03vw;   /* Detail Pane width */
+  --gr-canvas: calc(100vw - var(--gr-step-7) - var(--gr-step-8)); /* Canvas computed width */
+
+  /* Ask AI button — extends .btn-primary from sentinel */
+  --ask-ai-width: 120px;
+
+  /* Nav Rail internal zone heights */
+  --nav-accel-height: var(--gr-step-3);
+  --nav-prompt-height: var(--gr-step-5);
+  /* Conversation Stream: flex-grow fills remaining height */
+}

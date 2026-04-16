@@ -1,0 +1,125 @@
+/* PANEL: Canvas | extends: sentinel-v2.css + tokens.css */
+
+/* Width: var(--gr-canvas) | BG: var(--color-bg-primary) */
+/* Padding: var(--spacing-lg) */
+/* Tab views (toggled by setActiveTab): */
+/* - dashboard: health cards grid using .domain-card and .domain-cards-grid from sentinel */
+/* - incidents: tabular list using .incident-card from sentinel */
+/* - topology: placeholder */
+/* - applications: tabular list → openDetailPane(recordId, 'app') */
+/* - automation: placeholder */
+/* - activity: placeholder */
+/* - settings: config cards using .config-card from sentinel */
+
+#panel-canvas {
+  background-color: var(--color-bg-primary);
+  padding: 0; /* Remove padding - each canvas-view handles its own */
+  position: relative; /* For absolute positioning of info icon */
+  overflow: auto; /* Allow scrolling for canvas content */
+}
+
+/* Canvas View Container - each tab has its own */
+.canvas-view {
+  display: none; /* Hidden by default */
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+}
+
+.canvas-view.active {
+  display: flex; /* Show active view */
+}
+
+/* Canvas Top Panel - same height as topbar */
+.canvas-top-panel {
+  height: var(--gr-step-3);
+  background-color: var(--color-bg-secondary);
+  border-bottom: 1px solid var(--color-border-active);
+  padding: 0 var(--spacing-lg);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.canvas-panel-title {
+  font-family: var(--font-ui);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  /* Title comes after badge */
+  order: 2;
+  flex: 1; /* Take remaining space */
+}
+
+.coming-soon-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: rgba(255, 165, 0, 0.1);
+  border: 1px solid rgba(255, 165, 0, 0.3);
+  border-radius: var(--radius-sm);
+  /* Left-aligned as first flex child */
+  order: 1;
+}
+
+.construction-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.coming-soon-label {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255, 165, 0, 1);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Canvas Content Area */
+.canvas-content {
+  flex: 1;
+  padding: var(--spacing-lg);
+  overflow-y: auto;
+  background-color: var(--color-bg-primary);
+}
+
+/* Info Icon Button - Top Right Corner */
+.canvas-info-icon {
+  position: fixed;
+  top: calc(var(--gr-step-3) + var(--spacing-md));
+  right: var(--spacing-md);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-active);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  font-size: 1.25rem;
+  z-index: 40; /* Below detail pane but above canvas content */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.canvas-info-icon:hover {
+  background-color: var(--color-bg-tertiary);
+  border-color: var(--color-brand-primary);
+  color: var(--color-brand-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(173, 198, 255, 0.3);
+}
+
+/* Active state when detail pane is open */
+#panel-detail-pane.open ~ #panel-canvas .canvas-info-icon,
+.canvas-info-icon.active {
+  background-color: var(--color-brand-primary);
+  color: var(--color-bg-primary);
+  border-color: var(--color-brand-primary);
+  box-shadow: var(--accent-glow);
+}

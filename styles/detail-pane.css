@@ -1,0 +1,99 @@
+/* PANEL: Detail Pane | extends: sentinel-v2.css + tokens.css */
+
+/* Width: var(--gr-step-8) | BG: var(--color-bg-secondary) */
+/* Border-left: 1px solid var(--color-border-active) */
+/* Uses sentinel .slide-panel pattern for open/close animation */
+/* Header: --color-bg-tertiary bg, record title in --font-ui, close button */
+/* Body: scrollable detail fields, metrics, related records */
+/* Footer: action buttons using sentinel .btn-* classes */
+
+#panel-detail-pane {
+  /* Overlay positioning - on top of canvas */
+  position: fixed;
+  top: var(--gr-step-3); /* Below topbar */
+  right: 0;
+  width: var(--gr-step-8);
+  height: calc(100vh - var(--gr-step-3));
+
+  /* Styling */
+  background-color: var(--color-bg-secondary);
+  border-left: 1px solid var(--color-border-active);
+  box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
+
+  /* Slide animation - start hidden off-screen right */
+  transform: translateX(100%);
+  transition: transform var(--transition-normal);
+
+  /* Layer above canvas */
+  z-index: 50;
+
+  /* Layout for header/body/footer */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Open state - slide in from right */
+#panel-detail-pane.open {
+  transform: translateX(0);
+}
+
+/* Detail Pane Header */
+.detail-pane-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--color-bg-tertiary);
+  border-bottom: 1px solid var(--color-border-active);
+  flex-shrink: 0;
+}
+
+.detail-pane-title {
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.detail-pane-close {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-active);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.detail-pane-close:hover {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  border-color: var(--color-brand-primary);
+}
+
+/* Detail Pane Body */
+.detail-pane-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-lg);
+}
+
+/* Detail Pane Footer */
+.detail-pane-footer {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-top: 1px solid var(--color-border-active);
+  background-color: var(--color-bg-tertiary);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+  flex-shrink: 0;
+}
